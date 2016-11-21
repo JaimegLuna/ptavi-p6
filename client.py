@@ -11,10 +11,6 @@ import sys
 if len(sys.argv)!=3:
     sys.exit('Usage: python client.py method reciever@IP:SIPport')
 
-# Dirección IP del servidor.
-SERVER = 'localhost'
-PORT = 6001
-
 # Contenido que vamos a enviar
 
 SERVER = 'localhost'
@@ -24,7 +20,7 @@ LOGIN = DIR.split('@')[0] #Receptor
 IP = DIR.split(':')[0].split('@')[1]
 PORT = int(DIR.split(':')[1])
 
-# Lo que enviamos 
+# Contenido que vamos a enviar 
 LINE = METHOD + 'sip:' + LOGIN + '@' + IP + 'SIP/2.0\r\n\r\n'
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
@@ -36,11 +32,14 @@ print("Enviando: " + LINE)
 my_socket.send(bytes(LINE, 'utf-8') + b'\r\n')
 data = my_socket.recv(1024)
 
+if recv_invite ==['SIP/2.0 100 Trying', 'SIP/2.0 180 Ring' , 'SIP/2.0 200 OK']:
+    LINE_ACK = 'ACK sip:' + LOGIN + '@' + IP + 'SIP\r\n\r\n'
+    print("Enviando:" + LINE_ACK)
+    my_socket.send(bytes(LINE_ACK, 'utf-8') + b'\r\n')
+    data = my_socket.recv(1024)
+
 #Envio el ACK en caso de recibir el TRYING, RING Y OK
 rec_invite = data.decode('utf-8').split('\r\n\r\n')[0:-1]
-
-print('Recibido -- ', data.decode('utf-8'))
-print("Terminando socket...")
 
 # Cerramos todo
 my_socket.close()
