@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
 """
 Clase (y programa principal) para un servidor de eco en UDP simple
 """
@@ -21,13 +22,15 @@ class EchoHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
     """
-    method = line.decode('utf-8').split(' ')[0]
+  
+
     METODOS = ['INVITE', 'BYE', 'ACK']
 
     def handle(self):
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
+            method = line.decode('utf-8').split(' ')[0]
             
             # Si no hay más líneas salimos del bucle infinito
             if not line:
@@ -43,7 +46,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                 print('Vamos a ejecutar', aEjecutar)
                 os.system(aEjecutar)
             elif method == 'BYE':
-            
+                self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
 
             else:
                 self.wfile.write(b'SIP/2.0 400 Bad request\r\n\r\n')  
@@ -51,6 +54,6 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
 if __name__ == "__main__":
 
-    serv = socketserver.UDPserver((IP_S, PORT_S), EchoHandler)
+    serv = socketserver.UDPServer((IP_S, PORT_S), EchoHandler)
     print('Listening...')
     serv.serve_forever()
