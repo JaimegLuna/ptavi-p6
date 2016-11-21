@@ -16,17 +16,16 @@ SERVER = 'localhost'
 PORT = 6001
 
 # Contenido que vamos a enviar
-LINE = '¡Hola mundo!'
 
 SERVER = 'localhost'
 METHOD = sys.argv[1]
 DIR = sys.argv[2]
 LOGIN = DIR.split('@')[0] #Receptor 
-IP = DIR.split(':')[0],split('@')[1]
+IP = DIR.split(':')[0].split('@')[1]
 PORT = int(DIR.split(':')[1])
 
 # Lo que enviamos 
-LINE = METHOD + 'sip:' + RECEPTOR + '@' + IP + 'SIP/2.0\r\n\r\n'
+LINE = METHOD + 'sip:' + LOGIN + '@' + IP + 'SIP/2.0\r\n\r\n'
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
