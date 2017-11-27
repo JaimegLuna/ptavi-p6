@@ -5,42 +5,35 @@ Programa cliente que abre un socket a un servidor
 """
 
 import socket
-import sys
-
-# Dirección IP y puerto del servidor pasada por comandos.
-try:
-    METHOD = str(sys.argv[1])
-    RECEPTOR = str(sys.argv[2])
-except:
-    sys.exit("Usage: python3 client.py method receiver@IP:SIPport")
+ 
+# Cliente UDP simple.
+ 
+# Dirección IP del servidor.
+SERVER = 'localhost'
+PORT = 6001
+ 
+# Contenido que vamos a enviar
+LINE = '¡Hola mundo!'
 
 SERVER = 'localhost'
-plin = RECEPTOR.split('@')
-LOGIN = plin[0]
-IP = plin[1][:-5]
-PORT = int(plin[1][-4:])
-
-# Contenido que vamos a enviar
-LINE = str(METHOD + ' sip:' + LOGIN + '@' + IP + ' SIP/2.0\r\n')
+METHOD = sys.argv[1]
+DIR = sys.argv[2]
+LOGIN = DIR.split('@')[0]
+IP = DIR.split(':')[0],split('@')[1]
+PORT = int(DIR.split(':')[1])
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 my_socket.connect((SERVER, PORT))
-
+ 
 print("Enviando: " + LINE)
 my_socket.send(bytes(LINE, 'utf-8') + b'\r\n')
 data = my_socket.recv(1024)
+ 
 print('Recibido -- ', data.decode('utf-8'))
-
-if METHOD == 'INVITE':
-    ACK_line = str('ACK' + ' sip:' + LOGIN + '@' + IP + ' SIP/2.0\r\n')
-    print("Enviando: " + ACK_line)
-    my_socket.send(bytes(ACK_line, 'utf-8') + b'\r\n')
-
-elif METHOD == 'BYE':
-
-    print("Terminando socket...")
-    # Cerramos todo
-    my_socket.close()
-    print("Fin.")
+print("Terminando socket...")
+ 
+# Cerramos todo
+my_socket.close()
+print("Fin.")
